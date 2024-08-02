@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Real Estate Price Prediction</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <div class="container">
+    <nav class="navbar bg-body-tertiary">
+      <div class="container-fluid">
+          <h1>Real Estate Price Prediction</h1>
+        </a>
+      </div>
+    </nav>
+    <form id="prediction-form">
+      <div class="form-group">
+        <label for="CRIM">CRIM:</label>
+        <input type="number" class="form-control" id="CRIM" name="CRIM" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="ZN">ZN:</label>
+        <input type="number" class="form-control" id="ZN" name="ZN" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="INDUS">INDUS:</label>
+        <input type="number" class="form-control" id="INDUS" name="INDUS" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="CHAS">CHAS:</label>
+        <input type="number" class="form-control" id="CHAS" name="CHAS" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="NOX">NOX:</label>
+        <input type="number" class="form-control" id="NOX" name="NOX" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="RM">RM:</label>
+        <input type="number" class="form-control" id="RM" name="RM" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="AGE">AGE:</label>
+        <input type="number" class="form-control" id="AGE" name="AGE" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="DIS">DIS:</label>
+        <input type="number" class="form-control" id="DIS" name="DIS" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="RAD">RAD:</label>
+        <input type="number" class="form-control" id="RAD" name="RAD" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="TAX">TAX:</label>
+        <input type="number" class="form-control" id="TAX" name="TAX" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="PTRATIO">PTRATIO:</label>
+        <input type="number" class="form-control" id="PTRATIO" name="PTRATIO" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="B">B:</label>
+        <input type="number" class="form-control" id="B" name="B" step="any" required>
+      </div>
+      <div class="form-group">
+        <label for="LSTAT">LSTAT:</label>
+        <input type="number" class="form-control" id="LSTAT" name="LSTAT" step="any" required>
+      </div>
+      <button type="button" class="btn btn-primary" onclick="predictPrice()">Predict</button>
+    </form>
+    <h2 id="prediction-result"></h2>
+  </div>
+
+  <script>
+    function predictPrice() {
+      const form = document.getElementById('prediction-form');
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        data[key] = parseFloat(value);
+      });
+
+      fetch('/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.error) {
+          document.getElementById('prediction-result').innerText = `Error: ${result.error}`;
+        } else {
+          // Display the prediction multiplied by 1000
+          document.getElementById('prediction-result').innerText = `Predicted Price: Rs ${result.prediction.toFixed(2)}`;
+        }
+      })
+      .catch(error => {
+        document.getElementById('prediction-result').innerText = `Error: ${error}`;
+      });
+    }
+  </script>
+</body>
+</html>
